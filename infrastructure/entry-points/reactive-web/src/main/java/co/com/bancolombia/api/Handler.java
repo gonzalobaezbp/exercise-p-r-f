@@ -1,5 +1,6 @@
 package co.com.bancolombia.api;
 
+import co.com.bancolombia.api.dto.NameAccountDto;
 import co.com.bancolombia.model.account.Account;
 import co.com.bancolombia.usecase.registeraccount.RegisterAccountUseCase;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,11 @@ public class Handler {
     private  final RegisterAccountUseCase registerAccountUseCase;
 
     public Mono<ServerResponse> listenGETUseCase(ServerRequest serverRequest) {
-        Mono<Account> register = registerAccountUseCase.register("Jhon Doe");
+
+
+
+        Mono<Account> register = serverRequest.bodyToMono(NameAccountDto.class)
+                                                    .flatMap(nameAccountDto -> registerAccountUseCase.register(nameAccountDto.getName()));
         return ServerResponse.ok().body(register, Account.class);
     }
 
